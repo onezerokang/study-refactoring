@@ -35,11 +35,9 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     fun totalAmount(): Int {
-        var result = 0
-        for (perf: Invoice.Performance in invoice.performances) {
-            result += amountFor(perf)
+        return invoice.performances.fold(0) { total, perf ->
+            total + amountFor(perf)
         }
-        return result
     }
 
     fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
@@ -52,11 +50,9 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     fun totalVolumeCredits(): Int {
-        var result = 0
-        for (perf: Invoice.Performance in invoice.performances) {
-            result += volumeCreditsFor(perf)
+        return invoice.performances.fold(0) { total, perf ->
+            total + volumeCreditsFor(perf)
         }
-        return result
     }
 
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
