@@ -5,13 +5,8 @@ import java.util.*
 import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    var totalAmount = 0
-    var volumeCredits = 0
-    var result = "청구 내역 (고객명: ${invoice.customer})\n"
-    val format = NumberFormat.getCurrencyInstance(Locale.US)
 
-    for (perf: Invoice.Performance in invoice.performances) {
-        val play = plays[perf.playId]!!
+    fun amountFor(play: Play, perf: Invoice.Performance): Int {
         var thisAmount: Int
 
         when (play.type) {
@@ -32,6 +27,17 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
             else -> throw RuntimeException("알 수 없는 장르: ${play.type}")
         }
+        return thisAmount
+    }
+
+    var totalAmount = 0
+    var volumeCredits = 0
+    var result = "청구 내역 (고객명: ${invoice.customer})\n"
+    val format = NumberFormat.getCurrencyInstance(Locale.US)
+
+    for (perf: Invoice.Performance in invoice.performances) {
+        val play = plays[perf.playId]!!
+        val thisAmount: Int = amountFor(play, perf)
 
         // 포인트를 적립한다.
         volumeCredits += max(perf.audience - 30, 0)
@@ -47,4 +53,3 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     result += "적립 포인트: ${volumeCredits}점\n"
     return result
 }
-
