@@ -10,8 +10,37 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return plays[perf.playId]!!
     }
 
+    fun amountFor(aPerformance: Invoice.Performance): Int {
+        var result: Int
+
+        when (playFor(aPerformance).type) {
+            "tragedy" -> { // 비극
+                result = 40000
+                if (aPerformance.audience > 30) {
+                    result += 1000 * (aPerformance.audience - 30)
+                }
+            }
+
+            "comedy" -> { // 희극
+                result = 30000
+                if (aPerformance.audience > 20) {
+                    result += 10000 + 500 * (aPerformance.audience - 20)
+                }
+                result += 300 * aPerformance.audience
+            }
+
+            else -> throw RuntimeException("알 수 없는 장르: ${playFor(aPerformance).type}")
+        }
+        return result
+    }
+
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
-        return StatementData.EnrichedPerformance(aPerformance.playId, aPerformance.audience, playFor(aPerformance))
+        return StatementData.EnrichedPerformance(
+            aPerformance.playId,
+            aPerformance.audience,
+            playFor(aPerformance),
+            amountFor(aPerformance)
+        )
     }
 
     return renderPlainText(
@@ -78,7 +107,7 @@ fun renderPlainText(data: StatementData): String {
 
     for (perf: StatementData.EnrichedPerformance in data.performances) {
         // 청구 내역을 출력한다.
-        result += " ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
+        result += " ${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n"
     }
 
     result += "총액: ${usd(totalAmount())}\n"

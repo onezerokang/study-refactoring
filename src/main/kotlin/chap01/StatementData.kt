@@ -8,5 +8,6 @@ data class StatementData(
         val playId: String,
         val audience: Int,
         val play: Play,
+        val amount: Int,
     )
 }
