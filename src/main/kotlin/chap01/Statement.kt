@@ -6,23 +6,23 @@ import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
-    fun amountFor(play: Play, perf: Invoice.Performance): Int {
+    fun amountFor(play: Play, aPerformance: Invoice.Performance): Int {
         var result: Int
 
         when (play.type) {
             "tragedy" -> { // 비극
                 result = 40000
-                if (perf.audience > 30) {
-                    result += 1000 * (perf.audience - 30)
+                if (aPerformance.audience > 30) {
+                    result += 1000 * (aPerformance.audience - 30)
                 }
             }
 
             "comedy" -> { // 희극
                 result = 30000
-                if (perf.audience > 20) {
-                    result += 10000 + 500 * (perf.audience - 20)
+                if (aPerformance.audience > 20) {
+                    result += 10000 + 500 * (aPerformance.audience - 20)
                 }
-                result += 300 * perf.audience
+                result += 300 * aPerformance.audience
             }
 
             else -> throw RuntimeException("알 수 없는 장르: ${play.type}")
