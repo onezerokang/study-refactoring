@@ -5,7 +5,15 @@ import java.util.*
 import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    return renderPlainText(StatementData(invoice.customer, invoice.performances), plays)
+
+    fun enrichPerformance(aPerformance: Invoice.Performance): Invoice.Performance {
+        return aPerformance.copy()
+    }
+
+    return renderPlainText(
+        StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }),
+        plays
+    )
 }
 
 fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
