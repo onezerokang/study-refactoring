@@ -5,10 +5,10 @@ import java.util.*
 import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    return renderPlainText(invoice, plays)
+    return renderPlainText(StatementData(invoice.customer, invoice.performances), plays)
 }
 
-fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
+fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
     fun playFor(perf: Invoice.Performance): Play {
         return plays[perf.playId]!!
     }
@@ -39,7 +39,7 @@ fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
 
     fun totalAmount(): Int {
         var result = 0
-        for (perf: Invoice.Performance in invoice.performances) {
+        for (perf: Invoice.Performance in data.performances) {
             result += amountFor(perf)
         }
         return result
@@ -56,7 +56,7 @@ fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
 
     fun totalVolumeCredits(): Int {
         var result = 0
-        for (perf: Invoice.Performance in invoice.performances) {
+        for (perf: Invoice.Performance in data.performances) {
             result += volumeCreditsFor(perf)
         }
         return result
@@ -66,9 +66,9 @@ fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount / 100)
     }
 
-    var result = "청구 내역 (고객명: ${invoice.customer})\n"
+    var result = "청구 내역 (고객명: ${data.customer})\n"
 
-    for (perf: Invoice.Performance in invoice.performances) {
+    for (perf: Invoice.Performance in data.performances) {
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
     }
