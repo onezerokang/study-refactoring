@@ -34,6 +34,14 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun totalAmount(): Int {
+        var result = 0
+        for (perf: Invoice.Performance in invoice.performances) {
+            result += amountFor(perf)
+        }
+        return result
+    }
+
     fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
         var result = 0
         result += max(aPerformance.audience - 30, 0)
@@ -54,43 +62,11 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     return renderPlainText(
-        StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }),
+        StatementData(invoice.customer, totalAmount(), invoice.performances.map { enrichPerformance(it) }),
     )
 }
 
 fun renderPlainText(data: StatementData): String {
-
-    fun amountFor(aPerformance: StatementData.EnrichedPerformance): Int {
-        var result: Int
-
-        when (aPerformance.play.type) {
-            "tragedy" -> { // 비극
-                result = 40000
-                if (aPerformance.audience > 30) {
-                    result += 1000 * (aPerformance.audience - 30)
-                }
-            }
-
-            "comedy" -> { // 희극
-                result = 30000
-                if (aPerformance.audience > 20) {
-                    result += 10000 + 500 * (aPerformance.audience - 20)
-                }
-                result += 300 * aPerformance.audience
-            }
-
-            else -> throw RuntimeException("알 수 없는 장르: ${aPerformance.play.type}")
-        }
-        return result
-    }
-
-    fun totalAmount(): Int {
-        var result = 0
-        for (perf: StatementData.EnrichedPerformance in data.performances) {
-            result += amountFor(perf)
-        }
-        return result
-    }
 
     fun totalVolumeCredits(): Int {
         var result = 0
@@ -111,7 +87,7 @@ fun renderPlainText(data: StatementData): String {
         result += " ${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n"
     }
 
-    result += "총액: ${usd(totalAmount())}\n"
+    result += "총액: ${usd(data.totalAmount)}\n"
     result += "적립 포인트: ${totalVolumeCredits()}점\n"
     return result
 }

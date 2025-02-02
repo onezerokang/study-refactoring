@@ -2,6 +2,7 @@ package chap01
 
 data class StatementData(
     val customer: String,
+    val totalAmount: Int,
     val performances: List<EnrichedPerformance>,
 ) {
     data class EnrichedPerformance(
