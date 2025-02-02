@@ -6,25 +6,25 @@ import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
+    fun playFor(perf: Invoice.Performance): Play {
+        return plays[perf.playId]!!
+    }
+
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
-        return StatementData.EnrichedPerformance(aPerformance.playId, aPerformance.audience)
+        return StatementData.EnrichedPerformance(aPerformance.playId, aPerformance.audience, playFor(aPerformance))
     }
 
     return renderPlainText(
         StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }),
-        plays
     )
 }
 
-fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
-    fun playFor(perf: StatementData.EnrichedPerformance): Play {
-        return plays[perf.playId]!!
-    }
+fun renderPlainText(data: StatementData): String {
 
     fun amountFor(aPerformance: StatementData.EnrichedPerformance): Int {
         var result: Int
 
-        when (playFor(aPerformance).type) {
+        when (aPerformance.play.type) {
             "tragedy" -> { // 비극
                 result = 40000
                 if (aPerformance.audience > 30) {
@@ -40,7 +40,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
                 result += 300 * aPerformance.audience
             }
 
-            else -> throw RuntimeException("알 수 없는 장르: ${playFor(aPerformance).type}")
+            else -> throw RuntimeException("알 수 없는 장르: ${aPerformance.play.type}")
         }
         return result
     }
@@ -56,7 +56,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
     fun volumeCreditsFor(aPerformance: StatementData.EnrichedPerformance): Int {
         var result = 0
         result += max(aPerformance.audience - 30, 0)
-        if ("comedy" == playFor(aPerformance).type) {
+        if ("comedy" == aPerformance.play.type) {
             result += aPerformance.audience / 5
         }
         return result
@@ -78,7 +78,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
 
     for (perf: StatementData.EnrichedPerformance in data.performances) {
         // 청구 내역을 출력한다.
-        result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
+        result += " ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
     }
 
     result += "총액: ${usd(totalAmount())}\n"

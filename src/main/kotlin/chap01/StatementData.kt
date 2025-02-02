@@ -7,5 +7,6 @@ data class StatementData(
     data class EnrichedPerformance(
         val playId: String,
         val audience: Int,
+        val play: Play,
     )
 }
