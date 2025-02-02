@@ -6,6 +6,10 @@ import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
+    fun playFor(perf: Invoice.Performance): Play {
+        return plays[perf.playId]!!
+    }
+
     fun amountFor(play: Play, aPerformance: Invoice.Performance): Int {
         var result: Int
 
@@ -36,7 +40,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     val format = NumberFormat.getCurrencyInstance(Locale.US)
 
     for (perf: Invoice.Performance in invoice.performances) {
-        val play = plays[perf.playId]!!
+        val play = playFor(perf)
         val thisAmount: Int = amountFor(play, perf)
 
         // 포인트를 적립한다.
