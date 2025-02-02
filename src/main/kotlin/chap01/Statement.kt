@@ -51,6 +51,14 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun totalVolumeCredits(): Int {
+        var result = 0
+        for (perf: Invoice.Performance in invoice.performances) {
+            result += volumeCreditsFor(perf)
+        }
+        return result
+    }
+
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
         return StatementData.EnrichedPerformance(
             aPerformance.playId,
@@ -62,19 +70,15 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     return renderPlainText(
-        StatementData(invoice.customer, totalAmount(), invoice.performances.map { enrichPerformance(it) }),
+        StatementData(
+            invoice.customer,
+            totalAmount(),
+            totalVolumeCredits(),
+            invoice.performances.map { enrichPerformance(it) }),
     )
 }
 
 fun renderPlainText(data: StatementData): String {
-
-    fun totalVolumeCredits(): Int {
-        var result = 0
-        for (perf: StatementData.EnrichedPerformance in data.performances) {
-            result += perf.volumeCredits
-        }
-        return result
-    }
 
     fun usd(amount: Int): String {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount / 100)
@@ -88,6 +92,6 @@ fun renderPlainText(data: StatementData): String {
     }
 
     result += "총액: ${usd(data.totalAmount)}\n"
-    result += "적립 포인트: ${totalVolumeCredits()}점\n"
+    result += "적립 포인트: ${data.totalVolumeCredits}점\n"
     return result
 }
