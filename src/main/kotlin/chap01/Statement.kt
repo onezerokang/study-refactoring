@@ -34,11 +34,11 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
-    fun volumeCreditsFor(perf: Invoice.Performance): Int {
+    fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
         var result = 0
-        result += max(perf.audience - 30, 0)
-        if ("comedy" == playFor(perf).type) {
-            result += perf.audience / 5
+        result += max(aPerformance.audience - 30, 0)
+        if ("comedy" == playFor(aPerformance).type) {
+            result += aPerformance.audience / 5
         }
         return result
     }
