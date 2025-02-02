@@ -6,8 +6,8 @@ import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
-    fun enrichPerformance(aPerformance: Invoice.Performance): Invoice.Performance {
-        return aPerformance.copy()
+    fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
+        return StatementData.EnrichedPerformance(aPerformance.playId, aPerformance.audience)
     }
 
     return renderPlainText(
@@ -17,11 +17,11 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 }
 
 fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
-    fun playFor(perf: Invoice.Performance): Play {
+    fun playFor(perf: StatementData.EnrichedPerformance): Play {
         return plays[perf.playId]!!
     }
 
-    fun amountFor(aPerformance: Invoice.Performance): Int {
+    fun amountFor(aPerformance: StatementData.EnrichedPerformance): Int {
         var result: Int
 
         when (playFor(aPerformance).type) {
@@ -47,13 +47,13 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
 
     fun totalAmount(): Int {
         var result = 0
-        for (perf: Invoice.Performance in data.performances) {
+        for (perf: StatementData.EnrichedPerformance in data.performances) {
             result += amountFor(perf)
         }
         return result
     }
 
-    fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
+    fun volumeCreditsFor(aPerformance: StatementData.EnrichedPerformance): Int {
         var result = 0
         result += max(aPerformance.audience - 30, 0)
         if ("comedy" == playFor(aPerformance).type) {
@@ -64,7 +64,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
 
     fun totalVolumeCredits(): Int {
         var result = 0
-        for (perf: Invoice.Performance in data.performances) {
+        for (perf: StatementData.EnrichedPerformance in data.performances) {
             result += volumeCreditsFor(perf)
         }
         return result
@@ -76,7 +76,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
 
     var result = "청구 내역 (고객명: ${data.customer})\n"
 
-    for (perf: Invoice.Performance in data.performances) {
+    for (perf: StatementData.EnrichedPerformance in data.performances) {
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
     }
