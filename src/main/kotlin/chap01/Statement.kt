@@ -4,7 +4,7 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.math.max
 
-fun statement(invoice: Invoice, plays: Map<String, Play>): String {
+fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementData {
 
     fun playFor(perf: Invoice.Performance): Play {
         return plays[perf.playId]!!
@@ -65,13 +65,16 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         )
     }
 
-    return renderPlainText(
-        StatementData(
-            invoice.customer,
-            totalAmount(),
-            totalVolumeCredits(),
-            invoice.performances.map { enrichPerformance(it) }),
+    return StatementData(
+        invoice.customer,
+        totalAmount(),
+        totalVolumeCredits(),
+        invoice.performances.map { enrichPerformance(it) }
     )
+}
+
+fun statement(invoice: Invoice, plays: Map<String, Play>): String {
+    return renderPlainText(createStatementData(invoice, plays))
 }
 
 fun renderPlainText(data: StatementData): String {
