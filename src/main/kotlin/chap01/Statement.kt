@@ -35,11 +35,11 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     fun totalAmount(): Int {
-        var totalAmount = 0
+        var result = 0
         for (perf: Invoice.Performance in invoice.performances) {
-            totalAmount += amountFor(perf)
+            result += amountFor(perf)
         }
-        return totalAmount
+        return result
     }
 
     fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
