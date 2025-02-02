@@ -5,7 +5,10 @@ import java.util.*
 import kotlin.math.max
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
+    return renderPlainText(invoice, plays)
+}
 
+fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
     fun playFor(perf: Invoice.Performance): Play {
         return plays[perf.playId]!!
     }
