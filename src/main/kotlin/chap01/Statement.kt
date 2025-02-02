@@ -34,18 +34,22 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun volumeCreditsFor(perf: Invoice.Performance): Int {
+        var volumeCredits = 0
+        volumeCredits += max(perf.audience - 30, 0)
+        if ("comedy" == playFor(perf).type) {
+            volumeCredits += perf.audience / 5
+        }
+        return volumeCredits
+    }
+
     var totalAmount = 0
     var volumeCredits = 0
     var result = "청구 내역 (고객명: ${invoice.customer})\n"
     val format = NumberFormat.getCurrencyInstance(Locale.US)
 
     for (perf: Invoice.Performance in invoice.performances) {
-        // 포인트를 적립한다.
-        volumeCredits += max(perf.audience - 30, 0)
-        // 희극 관객 5명마다 추가 포인트를 제공한다.
-        if ("comedy" == playFor(perf).type) {
-            volumeCredits += perf.audience / 5
-        }
+        volumeCredits += volumeCreditsFor(perf)
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${format.format(amountFor(perf) / 100)} (${perf.audience}석)\n"
         totalAmount += amountFor(perf)
