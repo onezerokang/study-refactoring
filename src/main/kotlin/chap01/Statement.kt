@@ -55,13 +55,13 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount / 100)
     }
 
-    var totalAmount = 0
     var result = "청구 내역 (고객명: ${invoice.customer})\n"
 
     for (perf: Invoice.Performance in invoice.performances) {
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
     }
+    var totalAmount = 0
     for (perf: Invoice.Performance in invoice.performances) {
         totalAmount += amountFor(perf)
     }
