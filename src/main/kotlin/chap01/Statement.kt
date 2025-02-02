@@ -34,12 +34,22 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
+        var result = 0
+        result += max(aPerformance.audience - 30, 0)
+        if ("comedy" == playFor(aPerformance).type) {
+            result += aPerformance.audience / 5
+        }
+        return result
+    }
+
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
         return StatementData.EnrichedPerformance(
             aPerformance.playId,
             aPerformance.audience,
             playFor(aPerformance),
-            amountFor(aPerformance)
+            amountFor(aPerformance),
+            volumeCreditsFor(aPerformance),
         )
     }
 
@@ -82,19 +92,10 @@ fun renderPlainText(data: StatementData): String {
         return result
     }
 
-    fun volumeCreditsFor(aPerformance: StatementData.EnrichedPerformance): Int {
-        var result = 0
-        result += max(aPerformance.audience - 30, 0)
-        if ("comedy" == aPerformance.play.type) {
-            result += aPerformance.audience / 5
-        }
-        return result
-    }
-
     fun totalVolumeCredits(): Int {
         var result = 0
         for (perf: StatementData.EnrichedPerformance in data.performances) {
-            result += volumeCreditsFor(perf)
+            result += perf.volumeCredits
         }
         return result
     }
