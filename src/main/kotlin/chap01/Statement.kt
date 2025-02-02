@@ -11,27 +11,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     }
 
     fun amountFor(aPerformance: Invoice.Performance): Int {
-        var result: Int
-
-        when (playFor(aPerformance).type) {
-            "tragedy" -> { // 비극
-                result = 40000
-                if (aPerformance.audience > 30) {
-                    result += 1000 * (aPerformance.audience - 30)
-                }
-            }
-
-            "comedy" -> { // 희극
-                result = 30000
-                if (aPerformance.audience > 20) {
-                    result += 10000 + 500 * (aPerformance.audience - 20)
-                }
-                result += 300 * aPerformance.audience
-            }
-
-            else -> throw RuntimeException("알 수 없는 장르: ${playFor(aPerformance).type}")
-        }
-        return result
+        return PerformanceCalculator(aPerformance, playFor(aPerformance)).amount()
     }
 
     fun totalAmount(): Int {
@@ -56,6 +36,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     }
 
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
+        val calculator = PerformanceCalculator(aPerformance, playFor(aPerformance))
         return StatementData.EnrichedPerformance(
             aPerformance.playId,
             aPerformance.audience,
