@@ -69,9 +69,8 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
     }
-    val totalAmount = totalAmount()
 
-    result += "총액: ${usd(totalAmount)}\n"
+    result += "총액: ${usd(totalAmount())}\n"
     result += "적립 포인트: ${totalVolumeCredits()}점\n"
     return result
 }
