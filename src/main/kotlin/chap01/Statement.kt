@@ -29,9 +29,9 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         return result
     }
 
-    fun totalVolumeCredits(): Int {
-        return invoice.performances.fold(0) { total, perf ->
-            total + volumeCreditsFor(perf)
+    fun totalVolumeCredits(enrichedPerformances: List<StatementData.EnrichedPerformance>): Int {
+        return enrichedPerformances.fold(0) { total, perf ->
+            total + perf.volumeCredits
         }
     }
 
@@ -50,7 +50,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     return StatementData(
         invoice.customer,
         totalAmount(enrichedPerformances),
-        totalVolumeCredits(),
+        totalVolumeCredits(enrichedPerformances),
         enrichedPerformances
     )
 }
