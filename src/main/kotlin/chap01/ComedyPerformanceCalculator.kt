@@ -12,4 +12,8 @@ class ComedyPerformanceCalculator(
         result += 300 * this.performance.audience
         return result
     }
+
+    override fun volumeCredits(): Int {
+        return super.volumeCredits() + performance.audience / 5
+    }
 }
