@@ -1,5 +1,7 @@
 package chap01
 
+import kotlin.math.max
+
 class PerformanceCalculator(
     val performance: Invoice.Performance,
     val play: Play,
@@ -25,6 +27,15 @@ class PerformanceCalculator(
             }
 
             else -> throw RuntimeException("알 수 없는 장르: ${this.play.type}")
+        }
+        return result
+    }
+
+    fun volumeCredits(): Int {
+        var result = 0
+        result += max(performance.audience - 30, 0)
+        if ("comedy" == play.type) {
+            result += performance.audience / 5
         }
         return result
     }
