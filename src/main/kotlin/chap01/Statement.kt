@@ -30,7 +30,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     }
 
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
-        val calculator = PerformanceCalculator(aPerformance, playFor(aPerformance))
+        val calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance))
         return StatementData.EnrichedPerformance(
             aPerformance.playId,
             aPerformance.audience,
