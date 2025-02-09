@@ -10,10 +10,6 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         return plays[perf.playId]!!
     }
 
-    fun amountFor(aPerformance: Invoice.Performance): Int {
-        return PerformanceCalculator(aPerformance, playFor(aPerformance)).amount()
-    }
-
     fun totalAmount(enrichedPerformances: List<StatementData.EnrichedPerformance>): Int {
         return enrichedPerformances.fold(0) { total, perf ->
             total + perf.amount
@@ -41,7 +37,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
             aPerformance.playId,
             aPerformance.audience,
             playFor(aPerformance),
-            amountFor(aPerformance),
+            calculator.amount(),
             volumeCreditsFor(aPerformance),
         )
     }
