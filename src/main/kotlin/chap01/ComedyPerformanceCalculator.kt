@@ -2,8 +2,7 @@ package chap01
 
 class ComedyPerformanceCalculator(
     performance: Invoice.Performance,
-    play: Play,
-) : PerformanceCalculator(performance, play) {
+) : PerformanceCalculator(performance) {
     override fun amount(): Int {
         var result = 30000
         if (this.performance.audience > 20) {

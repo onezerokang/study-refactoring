@@ -23,8 +23,8 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
 
     fun createPerformanceCalculator(aPerformance: Invoice.Performance, play: Play): PerformanceCalculator {
         return when (play.type) {
-            "tragedy" -> TragedyPerformanceCalculator(aPerformance, play)
-            "comedy" -> ComedyPerformanceCalculator(aPerformance, play)
+            "tragedy" -> TragedyPerformanceCalculator(aPerformance)
+            "comedy" -> ComedyPerformanceCalculator(aPerformance)
             else -> throw RuntimeException("알 수 없는 장르: ${play.type}")
         }
     }
