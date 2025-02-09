@@ -2,7 +2,7 @@ package chap01
 
 import kotlin.math.max
 
-class PerformanceCalculator(
+open class PerformanceCalculator(
     val performance: Invoice.Performance,
     val play: Play,
 ) {
