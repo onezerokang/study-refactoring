@@ -21,6 +21,14 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         }
     }
 
+    fun createPerformanceCalculator(aPerformance: Invoice.Performance, play: Play): PerformanceCalculator {
+        return when (play.type) {
+            "tragedy" -> TragedyPerformanceCalculator(aPerformance, play)
+            "comedy" -> ComedyPerformanceCalculator(aPerformance, play)
+            else -> throw RuntimeException("알 수 없는 장르: ${play.type}")
+        }
+    }
+
     fun enrichPerformance(aPerformance: Invoice.Performance): StatementData.EnrichedPerformance {
         val calculator = PerformanceCalculator(aPerformance, playFor(aPerformance))
         return StatementData.EnrichedPerformance(
