@@ -2,7 +2,6 @@ package chap01
 
 import java.text.NumberFormat
 import java.util.*
-import kotlin.math.max
 
 fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementData {
 
@@ -14,15 +13,6 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         return enrichedPerformances.fold(0) { total, perf ->
             total + perf.amount
         }
-    }
-
-    fun volumeCreditsFor(aPerformance: Invoice.Performance): Int {
-        var result = 0
-        result += max(aPerformance.audience - 30, 0)
-        if ("comedy" == playFor(aPerformance).type) {
-            result += aPerformance.audience / 5
-        }
-        return result
     }
 
     fun totalVolumeCredits(enrichedPerformances: List<StatementData.EnrichedPerformance>): Int {
@@ -38,7 +28,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
             aPerformance.audience,
             playFor(aPerformance),
             calculator.amount(),
-            volumeCreditsFor(aPerformance),
+            calculator.volumeCredits(),
         )
     }
 
