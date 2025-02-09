@@ -46,12 +46,15 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         )
     }
 
-    val enrichedPerformances = invoice.performances.map { enrichPerformance(it) }
+    fun enrichedPerformances(): List<StatementData.EnrichedPerformance> {
+        return invoice.performances.map { enrichPerformance(it) }
+    }
+
     return StatementData(
         invoice.customer,
-        totalAmount(enrichedPerformances),
-        totalVolumeCredits(enrichedPerformances),
-        enrichedPerformances
+        totalAmount(enrichedPerformances()),
+        totalVolumeCredits(enrichedPerformances()),
+        enrichedPerformances()
     )
 }
 
