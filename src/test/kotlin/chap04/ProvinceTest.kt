@@ -1,10 +1,8 @@
 package chap04
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.*
 
 @DisplayName("province")
 class ProvinceTest {
@@ -36,6 +34,69 @@ class ProvinceTest {
             { assertThat(asia.shortfall()).isEqualTo(-6) },
             { assertThat(asia.profit()).isEqualTo(292) }
         )
+    }
+
+    @DisplayName("zero demand")
+    @Test
+    fun zeroDemand() {
+        asia.demand = 0
+        assertAll(
+            { assertThat(asia.shortfall()).isEqualTo(-25) },
+            { assertThat(asia.profit()).isZero() }
+        )
+    }
+
+    @DisplayName("negative demand")
+    @Test
+    fun negativeDemand() {
+        asia.demand = -1
+        assertAll(
+            { assertThat(asia.shortfall()).isEqualTo(-26) },
+            { assertThat(asia.profit()).isEqualTo(-10) }
+        )
+    }
+
+    @DisplayName("empty string demand")
+    @Test
+    fun emptyStringDemand() {
+        assertThatThrownBy { asia.demand("") }
+            .isInstanceOf(NumberFormatException::class.java)
+    }
+
+    @DisplayName("string for producers")
+    @Test
+    fun stringForProducers() {
+
+    }
+
+    @Nested
+    @DisplayName("no producers")
+    inner class Context_with_no_producers {
+        private lateinit var noProducers: Province
+
+        @BeforeEach
+        fun setUp() {
+            noProducers = Province(
+                ProvinceData(
+                    name = "No producers",
+                    producers = emptyList(),
+                    demand = 30,
+                    price = 20,
+                )
+            )
+        }
+
+        @DisplayName("shortfall")
+        @Test
+        fun shortfall() {
+            assertThat(noProducers.shortfall()).isEqualTo(30)
+        }
+
+        @DisplayName("profit")
+        @Test
+        fun profit() {
+            assertThat(noProducers.profit()).isZero()
+        }
     }
 
 }
