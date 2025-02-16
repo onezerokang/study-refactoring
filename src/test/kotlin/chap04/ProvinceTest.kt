@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 
 @DisplayName("province")
 class ProvinceTest {
@@ -25,6 +26,16 @@ class ProvinceTest {
     @Test
     fun profit() {
         assertThat(asia.profit()).isEqualTo(230)
+    }
+
+    @DisplayName("change production")
+    @Test
+    fun changeProduction() {
+        asia.producers[0].production(20)
+        assertAll(
+            { assertThat(asia.shortfall()).isEqualTo(-6) },
+            { assertThat(asia.profit()).isEqualTo(292) }
+        )
     }
 
 }
